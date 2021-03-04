@@ -1,5 +1,5 @@
-# Cube Play download:
-# https://github.com/RH1CK/CubePlay/archive/master.zip
+# Cube Play MATRIX download:
+# https://github.com/D4anielCB/CBmatrix/archive/master.zip
 
 Addon modificado do PlaylistLoader 1.2.0 por Avigdor https://github.com/avigdork/xbmc-avigdork.
 
