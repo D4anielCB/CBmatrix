@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, math, html
 #htmlentitydefs
 from urllib.parse import urlparse, quote_plus
@@ -168,6 +168,7 @@ def ReadList(fileName):
 		content=[]
 	return content
 def SaveList(filname, chList):
+	ST(chList)
 	try:
 		with io.open(filname, 'w', encoding='utf-8') as handle:
 			handle.write(unicode(json.dumps(chList, indent=4, ensure_ascii=False)))
@@ -806,7 +807,7 @@ def Busca(): #160
 	d = quote_plus(d)
 	progress = xbmcgui.DialogProgress()
 	progress.create('Buscando...')
-	progress.update(0, "0%", "Redecanais", "")
+	progress.update(0, "Redecanais")
 	if not d:
 		return Categories()
 		sys.exit(int(sys.argv[1]))
@@ -832,7 +833,7 @@ def Busca(): #160
 		l= 0
 		for x in range(0, 20):
 			l +=1
-			progress.update(l*10/2, str(l*10/2)+"%", "Redecanais", "")
+			progress.update(int(l*10/2),"Redecanais "+str(l*10/2)+"%")
 			#AddDir("[COLOR blue]" +str(l)+ "[/COLOR]" ,"", 135, "", "")
 			link = OpenURL(proxy+"https://" + RC +"search.php?keywords="+d+"&page="+str(l))
 			match = re.compile('data\-echo\=\"([^\"]+).{10,150}href=\"([^\"]+).{0,10}title=\"([^\"]+)\"').findall(link.replace('\n','').replace('\r',''))
@@ -852,7 +853,7 @@ def Busca(): #160
 				break
 	except:
 		pass
-	progress.update(100, "100%", "Netcine", "")
+	progress.update(100, "Netcine")
 	try:
 		AddDir("[COLOR yellow][B][NetCine.us][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		link2 = OpenURL("http://netcine.biz/?s="+d).replace('\n','').replace('\r','')
@@ -909,7 +910,7 @@ def Busca(): #160
 						AddDir("[COLOR lightgreen]"+name2+"[/COLOR]", url2, 402, img2, img2,isFolder=True,IsPlayable=False)
 		except:
 			pass '''
-	progress.update(100, "100", "", "")
+	progress.update(100)
 	progress.close()
 	#l=0
 	#i=0
@@ -1867,9 +1868,10 @@ def getmd5(t):
 
 def CheckUpdate(msg): #200
 	try:
-		uversao = urllib2.urlopen( "https://raw.githubusercontent.com/D4anielCB/CBmatrix/master/version.txt" ).read().replace('\n','').replace('\r','')
+		uversao = OpenURL( "https://raw.githubusercontent.com/D4anielCB/CBmatrix/master/version.txt" ).replace('\n','').replace('\r','')
 		uversao = re.compile('[a-zA-Z\.\d]+').findall(uversao)[0]
 		#xbmcgui.Dialog().ok(Versao, uversao)
+		#ST(uversao)
 		if uversao != Versao:
 			Update()
 			xbmc.executebuiltin("Container.Refresh()")
@@ -1884,7 +1886,7 @@ def Update():
 	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
 	try:
 		fonte = OpenURL( "https://raw.githubusercontent.com/D4anielCB/CBmatrix/master/default.py" )
-		prog = re.compile('#checkintegrity25852').findall(fonte)
+		prog = re.compile('#checkintegritymatrix25852').findall(fonte)
 		if prog:
 			py = os.path.join( Path, "default.py")
 			file = open(py, "w")
@@ -2156,4 +2158,4 @@ elif mode == 405:
 	PlaySSF()
 	
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
-#checkintegrity25852
+#checkintegritymatrix25852
