@@ -98,7 +98,7 @@ proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
 RC="redecanais.cloud/"
-RCref="https://gamesgo.fun/"
+RCref="https://homeingles.fun/"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -150,10 +150,12 @@ def MSeries(): #-3
 # --------------  common
 def OpenURL(url, headers={}, user_data={}, cookieJar=None, justCookie=False):
 	req = Request(url)
+	headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0'
+	req.headers['Range'] = 'bytes=%s-%s' % (100, 350)
 	for k, v in headers.items():
 		req.add_header(k, v)
-	if not 'User-Agent' in headers:
-		req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0')
+	#if not 'User-Agent' in headers:
+		#req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0')
 	return urlopen(req).read().decode("utf-8").replace("\r", "")
 def ReadList(fileName):
 	import shutil
@@ -168,7 +170,6 @@ def ReadList(fileName):
 		content=[]
 	return content
 def SaveList(filname, chList):
-	ST(chList)
 	try:
 		with io.open(filname, 'w', encoding='utf-8') as handle:
 			handle.write(unicode(json.dumps(chList, indent=4, ensure_ascii=False)))
@@ -577,11 +578,12 @@ def PlayMRC2(): #96 Play filmes direto
 			#return
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			player = re.sub('redecanais\.[^\/]+', "gamesgo.fun", player)
+			player = re.sub('redecanais\.[^\/]+', "homeingles.fun", player)
 			mp4 = OpenURL(player ,headers={'referer': RCref})
 			try:
 				player = re.compile('href.{1,5}(mega[^"|\']*)').findall(mp4)
-				mp42 = OpenURL("https://gamesgo.fun/player3/"+player[0] ,headers={'referer': RCref})
+				mp42 = OpenURL("https://noticiasfix.fun/player3/"+player[0], headers={'referer': RCref})
+				#ST(mp42)
 				source = re.compile('source.+').findall(mp42)
 				file=re.compile('[^"|\']+\.mp4[^"|\'|\n]*').findall(source[0])
 				file[0] = re.sub('https', 'http', file[0])
@@ -601,7 +603,7 @@ def PlayMRC2(): #96 Play filmes direto
 			background=url+";;;"+name+";;;RC"
 			file[0] = re.sub('\n', '', file[0])
 			#file[0] = re.sub('https', 'http', file[0])
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|Referer=https://gamesgo.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, desc) #aqui
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|Referer=https://homeingles.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -633,11 +635,11 @@ def PlaySRC(): #133 Play series
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			player = re.sub('redecanais\.[^\/]+', "gamesgo.fun", player)
+			player = re.sub('redecanais\.[^\/]+', "homeingles.fun", player)
 			mp4 = OpenURL(player ,headers={'referer': RCref})
 			try:
 				player = re.compile('href.{1,5}(mega[^"|\']*)').findall(mp4)
-				mp42 = OpenURL("https://gamesgo.fun/player3/"+player[0] ,headers={'referer': RCref})
+				mp42 = OpenURL("https://homeingles.fun/player3/"+player[0] ,headers={'referer': RCref})
 				source = re.compile('source.+').findall(mp42)
 				file=re.compile('[^"|\']+\.mp4[^"|\'|\n]*').findall(source[0])
 				file[0] = re.sub('https', 'http', file[0])
@@ -650,7 +652,7 @@ def PlaySRC(): #133 Play series
 				NF(1)
 				file=re.compile('src..(http.{1,200}\.mp4[^"|\']*)').findall(mp4)
 			file[0] = re.sub('\n', '', file[0])	
-			PlayUrl(name, file[0] + "|Referer=https://gamesgo.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name)
+			PlayUrl(name, file[0] + "|Referer=https://homeingles.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
@@ -667,11 +669,7 @@ def TemporadasRC(x): #135 Episodios
 	if background=="None":
 		for b,tempname in temps:
 			tempname = re.sub('<[\/]{0,1}strong>', "", tempname)
-			try:
-				tempname = html.unescape(tempname)
-				ST(1)
-			except:
-				tempname = tempname
+			tempname = html.unescape(tempname)
 			if not "ilme" in tempname:
 				AddDir("[B]["+tempname+"][/B]" , url, 135, iconimage, iconimage, info="", isFolder=True, background=i)
 			i+=1
@@ -688,7 +686,6 @@ def TemporadasRC(x): #135 Episodios
 			urlm = re.compile('href\=\"(.+?)\"(.+?(Dub|Leg))?').findall(url2)
 			url2 = re.sub('(\w)-(\w)', r'\1 \2', url2)
 			namem = html.unescape( re.compile('([^\-]+)').findall(url2)[0])
-			ST(namem)
 			namem = re.sub('<[\/]{0,1}strong>', "", namem)
 			if "<" in namem:
 				namem = ""
@@ -976,21 +973,21 @@ def PlayTVCB(): #103
 		link = OpenURL("https://redecanaistv.com/"+url)
 		#link = OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
-		player = re.sub('^/', "https://gamesgo.fun/" , player[0] )
+		player = re.sub('^/', "https://homeingles.fun/" , player[0] )
 		player = re.sub('.php', "hlb.php", player )
 		#if "canal=" in url:
 		#	c = re.compile('canal\=(.+)').findall(url)
 		#	player = re.sub('canal=bbb', "canal="+c[0], "https://redecanaistv.com" )
 		#player = re.sub('\.php', "hlb.php", player)
-		m3u = OpenURL(player,headers={'referer': "https://gamesgo.fun/"})
+		m3u = OpenURL(player,headers={'referer': "https://homeingles.fun/"})
 		m = re.compile('[^"|\']+m3u8[^"|\']*').findall(m3u)
 		#m[0] = re.sub('https', 'http', m[0] )
 		m[0] = re.sub( '\'|"', '', m[0] )
-		#PlayUrl(name, m[0] + "|Referer=https://gamesgo.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
+		#PlayUrl(name, m[0] + "|Referer=https://homeingles.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
 		#link3 = OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
 	except:
 		NF("erro")
-	PlayUrl(name, m[0] + "|Referer=https://gamesgo.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
+	PlayUrl(name, m[0] + "|Referer=https://homeingles.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
 	#ST(m[0])
 	#AddDir("play", m[0] + "?play|Referer=https://cometa.top", 3, isFolder=False, IsPlayable=True, info="")
 	
@@ -1543,11 +1540,15 @@ def baixarsf(link=""):
 # ----------------- Fim Superflix
 def testfile(url):
 	try:
-		headers = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0' }
-		req = urllib2.Request(url, None, headers)
+		req = Request(url)
 		req.headers['Range'] = 'bytes=%s-%s' % (100, 350)
-		f = urllib2.urlopen(req).read()
-		return True
+		#ST(url)
+		req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0')
+		req.add_header('referer', RCref)
+		resp = urlopen(req)
+		resp.getcode()
+		#ST(resp)
+		return False
 	except:
 		return False
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
