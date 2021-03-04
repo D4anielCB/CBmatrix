@@ -154,7 +154,7 @@ def OpenURL(url, headers={}, user_data={}, cookieJar=None, justCookie=False):
 		req.add_header(k, v)
 	if not 'User-Agent' in headers:
 		req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0')
-	return urlopen(req).read().decode("utf-8")
+	return urlopen(req).read().decode("utf-8").replace("\r", "")
 def ReadList(fileName):
 	import shutil
 	try:
@@ -1884,7 +1884,7 @@ def CheckUpdate(msg): #200
 def Update():
 	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') )
 	try:
-		fonte = OpenURL( "https://raw.githubusercontent.com/D4anielCB/CBmatrix/master/default.py" ).replace("\r", "")
+		fonte = OpenURL( "https://raw.githubusercontent.com/D4anielCB/CBmatrix/master/default.py" )
 		prog = re.compile('#checkintegritymatrix25852').findall(fonte)
 		if prog:
 			py = os.path.join( Path, "default.py")
