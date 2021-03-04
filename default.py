@@ -1871,7 +1871,6 @@ def CheckUpdate(msg): #200
 		uversao = OpenURL( "https://raw.githubusercontent.com/D4anielCB/CBmatrix/master/version.txt" ).replace('\n','').replace('\r','')
 		uversao = re.compile('[a-zA-Z\.\d]+').findall(uversao)[0]
 		#xbmcgui.Dialog().ok(Versao, uversao)
-		#ST(uversao)
 		if uversao != Versao:
 			Update()
 			xbmc.executebuiltin("Container.Refresh()")
@@ -1883,9 +1882,9 @@ def CheckUpdate(msg): #200
 			xbmcgui.Dialog().ok('Cube Play', "Não foi possível checar")
 
 def Update():
-	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
+	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') )
 	try:
-		fonte = OpenURL( "https://raw.githubusercontent.com/D4anielCB/CBmatrix/master/default.py" )
+		fonte = OpenURL( "https://raw.githubusercontent.com/D4anielCB/CBmatrix/master/default.py" ).replace("\r", "")
 		prog = re.compile('#checkintegritymatrix25852').findall(fonte)
 		if prog:
 			py = os.path.join( Path, "default.py")
