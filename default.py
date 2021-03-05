@@ -6,7 +6,7 @@ from urllib.request import urlopen, Request
 import urllib.request, urllib.parse, urllib.error
 import urllib.parse
 
-Versao = "21.03.04"
+Versao = "21.03.05"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -107,7 +107,7 @@ def Categories(): #70
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
 	#AddDir("[COLOR white][B][Canais de TV1][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", 102, "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png", "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png")
-	AddDir("[COLOR white][B][Canais de TV2][/B][/COLOR]" , "", 100, "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png", "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png")
+	AddDir("[COLOR white][B][Canais de TV 2][/B][/COLOR]" , "", 100, "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png", "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png")
 	AddDir("[B][COLOR white][Filmes][/COLOR][/B]", "" , -2,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[COLOR white][B][Séries/Animes/Desenhos/Novelas][/B][/COLOR]" , "", -3, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR gold][B][Filmes Favoritos Cube Play][/B][/COLOR]", "" ,301 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
@@ -151,7 +151,6 @@ def MSeries(): #-3
 def OpenURL(url, headers={}, user_data={}, cookieJar=None, justCookie=False):
 	req = Request(url)
 	headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0'
-	req.headers['Range'] = 'bytes=%s-%s' % (100, 350)
 	for k, v in headers.items():
 		req.add_header(k, v)
 	#if not 'User-Agent' in headers:
@@ -942,7 +941,7 @@ def TVCB(x): #102
 		AddDir("Drive Test", "plugin://plugin.video.crunchyroll/?plotoutline=1&tvshowtitle=D&aired=2&episode_id=799907&series_id=2&duration=1&collection_id=2&plot=.&episode=799907&thumb=g&title=D&fanart=g&premiered=2&mode=videoplay&playcount=0&status=Continuing&season=0&studio=T&genre=anime", 3, "", "", isFolder=False, IsPlayable=True, info="")
 	#AddDir("reload", "", 50, "", "", isFolder=False, IsPlayable=False, info="")
 	AddDir("Configurar PVR Simple Client", "", 109, "", "", isFolder=False, IsPlayable=False, info="")
-	link = OpenURL("https://pastebin.com/raw/a5aLGgim").replace("\r\n","")
+	link = OpenURL("https://pastebin.com/raw/a5aLGgim").replace("\n","").replace("\r","")
 	if cadulto!="8080":
 		link = re.sub('Adulto.+', "", link)
 	m = re.compile('url="(.+?)".mg="(.+?)".ame="(.+?)"').findall(link)
@@ -983,11 +982,10 @@ def PlayTVCB(): #103
 		m = re.compile('[^"|\']+m3u8[^"|\']*').findall(m3u)
 		#m[0] = re.sub('https', 'http', m[0] )
 		m[0] = re.sub( '\'|"', '', m[0] )
-		#PlayUrl(name, m[0] + "|Referer=https://homeingles.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
+		PlayUrl(name, m[0] + "|Referer=https://homeingles.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
 		#link3 = OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
 	except:
 		NF("erro")
-	PlayUrl(name, m[0] + "|Referer=https://homeingles.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
 	#ST(m[0])
 	#AddDir("play", m[0] + "?play|Referer=https://cometa.top", 3, isFolder=False, IsPlayable=True, info="")
 	
@@ -1016,17 +1014,19 @@ def TVRC(): #100
 		jq = jq_['channel_info']
 	#ST(jq)
 	#return
-	#ST(jq[0])
+	#ST(jq)
 	for jq1 in jq:
 		if not "SD" in jq1['name']:
 			try:
-				AddDir( "[COLOR white]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['icon'], jq1['icon'], isFolder=False, IsPlayable=True, info="")
-				#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (1)", '+jq1['name']+ ' (1)', "1")
-				#ST("\n", "1")
-				#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+quote_plus(jq1['name'])+"&background=None&url="+quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
-				#ST("\n", "1")
+				if not "ADULTO" in jq1['name']:
+					AddDir( "[COLOR white]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['icon'], jq1['icon'], isFolder=False, IsPlayable=True, info="")
+					#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['icon']+'" group-title="Brasil (1)", '+jq1['name']+ ' (1)', "1")
+					#ST("\n", "1")
+					#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+quote_plus(jq1['name'])+"&background=None&url="+quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
+					#ST("\n", "1")
 			except:
 				pass
+		#break
 
 def PlayTVRC(): #101
 	t = OpenURL("http://satv.itvhotline.info/dqtv/eliptv_portal.php?a=get_list&p=fa8bfb8f8a8efdfbf68283f3b887f486fcfff98888fb8d8ee0adbebaa2b0b8")
@@ -1925,7 +1925,7 @@ def NF(x, t=5000):
 
 def ST(x, o="w+"):
 	if o == "1":
-		o = "ab+"
+		o = "a+"
 	x = str(x)
 	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') )
 	py = os.path.join( Path, "study.txt")
